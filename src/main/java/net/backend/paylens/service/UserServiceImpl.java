@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     // DTO - Request : User input
     public ResponseData<Object> register(RegisterDto request) throws Exception {
 
-        // check user apakah usernya ini udh terdaftar atau belum, check emailnya
+        // Check the email has been registered or not
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
 
         // Validate if user is found
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
         data.put("phoneNumber", detailUser.getPhoneNumber());
 
         // Response data
-        responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Success registerd", data);
+        responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Register success!", data);
         return responseData;
     }
 
@@ -76,63 +76,69 @@ public class UserServiceImpl implements UserService {
     // DTO - Request : User input
     public ResponseData<Object> login(LoginDto request) throws Exception {
 
-        // check user
+        // Check the email has been registered or not
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
 
         // Validate user is not found
         userValidator.validateUserNotFound(userOpt);
 
-        // user : db - model entity user
+        // User : Database - Model/Entity/User
         user = userOpt.get();
 
-        // validate wrong password
+        // Validate wrong password
         userValidator.validateWrongPassword(user.getPassword(), request.getPassword());
 
-        // data spesific
+        // Spesific data what will send
         data = new HashMap<>();
         data.put("email", user.getEmail());
 
-        // response data
-        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success login.", data);
+        // Response data
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Login success!", data);
         return responseData;
     }
 
     // Update user method
     @Override
     public ResponseData<Object> updateDetailUser(RegisterDto request) throws Exception {
-        // cari user yg mau kita update detailnya
+
+        // Check the email has been registered or not
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
 
-        // validate user is not found
+        // Validate user is not found
         userValidator.validateUserNotFound(userOpt);
 
+        // User : Database - Model/Entity/User
         user = userOpt.get();
 
-        // cari data detailnya
+        // Looking for detailed data
         Optional<DetailUser> detailOpt = detailUserRepository.findByUser(user);
-        // cek ada atau tidak detailnya
+
+        // Check if there is or not the detailed data
         if (detailOpt.isPresent()) {
+            // Detail user : Database - Model/Entity/Detail user
             detailUser = detailOpt.get();
-            // update
+            // Update data
             detailUser.setFirstName(request.getFirstName());
             detailUser.setLastName(request.getLastName());
             detailUser.setPhoneNumber(request.getPhoneNumber());
         } else {
+            // Instance object detail user
             detailUser = new DetailUser(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
+            // Set detail user
             detailUser.setUser(user);
         }
 
-        // save
+        // Save to database
         detailUserRepository.save(detailUser);
 
-        // data
+        // Spesific data what will send
         data = new HashMap<>();
         data.put("firstName", detailUser.getFirstName());
         data.put("lastName", detailUser.getLastName());
         data.put("phoneNumber", detailUser.getPhoneNumber());
 
-        // response data
-        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Success updated", data);
+        // Response data
+        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Update success!", data);
         return responseData;
     }
 

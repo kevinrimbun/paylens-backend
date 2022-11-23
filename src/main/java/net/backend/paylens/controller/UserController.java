@@ -1,13 +1,13 @@
 package net.backend.paylens.controller;
 
-//import javax.validation.Valid;
+import javax.validation.Valid;
 
 import net.backend.paylens.model.dto.request.LoginDto;
 import net.backend.paylens.model.dto.request.RegisterDto;
 import net.backend.paylens.model.dto.response.ResponseData;
 import net.backend.paylens.service.UserService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,21 +27,21 @@ public class UserController {
 
     // Register controller
     @PostMapping
-    public ResponseEntity<Object> signUp(@RequestBody RegisterDto request) throws Exception {
+    public ResponseEntity<Object> signUp(@RequestBody @Valid RegisterDto request) throws Exception {
         responseData = userService.register(request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
     // Login controller
     @PostMapping("/login")
-    public ResponseEntity<Object> signIn(@RequestBody LoginDto request) throws Exception {
+    public ResponseEntity<Object> signIn(@RequestBody @Valid LoginDto request) throws Exception {
         responseData = userService.login(request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
     // Update detail user controller
     @PutMapping
-    public ResponseEntity<Object> updateDetailUser(@RequestBody RegisterDto request) throws Exception {
+    public ResponseEntity<Object> updateDetailUser(@RequestBody @Valid RegisterDto request) throws Exception {
         responseData = userService.updateDetailUser(request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
