@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
+// import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -23,17 +23,25 @@ public class DetailUser {
     private long id;
 
     @Column(length = 50)
+    private String firstName;
+    @Column(length = 50)
+    private String lastName;
+    @Column(length = 20)
     private String phoneNumber;
+    // @Lob
+    // @Column(length = 1000)
+    // private byte[]  profilePicture;
 
-    @Lob
-    @Column(length = 1000)
-    private byte[]  profilePicture;
-
+    // Relation to users table
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
-    public DetailUser(String phoneNumber) {
+    // Constructor
+    public DetailUser(String firstName, String lastName, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+        // this.profilePicture = profilePicture;
     }
 }
