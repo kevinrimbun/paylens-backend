@@ -1,4 +1,4 @@
-package net.backend.paylens.services;
+package net.backend.paylens.service;
 
 import java.util.List;
 import java.util.Map;
