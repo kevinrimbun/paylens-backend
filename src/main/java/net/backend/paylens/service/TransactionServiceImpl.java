@@ -1,4 +1,4 @@
-package net.backend.paylens.services;
+package net.backend.paylens.service;
 
 import java.util.List;
 import java.util.Map;
@@ -19,33 +19,41 @@ import net.backend.paylens.repository.TransferRepository;
 @Transactional
 public class TransactionServiceImpl implements TransactionService{
 
+    // Construct repository
     @Autowired
     private BalanceRepository balanceRepository;
-
     @Autowired
     private TransferRepository transferRepository;
 
+    // Attribute
     private Balance balance;
     private Transfer transfer;
-    private ResponseData<Object> responseData;
     private Map<Object, Object> data;
     private List<Object> object;
+    private ResponseData<Object> responseData;
 
+    // Top up method
     @Override
     public ResponseData<Object> topUpMoney(TransactionDto amount) {
+
+            // Instance balance object
             balance = new Balance();
+
             Long jumlah = balance.getMoney();
+
+            // Set balance
             balance.setMoney(amount.getAmount());
             Long total = jumlah + amount.getAmount();
+
+            // Save to database
             balanceRepository.save(balance);
+            // Response data
             responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success", balance.getMoney());
-        
         return responseData;
     }
 
     @Override
     public ResponseData<Object> transfer(TransactionDto kevalapundaklututkaki) {
-        // TODO Auto-generated method stub
         return null;
     }
     
