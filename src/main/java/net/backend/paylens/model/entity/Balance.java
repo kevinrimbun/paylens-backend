@@ -23,7 +23,7 @@ public class Balance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100)
+    @Column(length = 100 , nullable = false)
     private Long money;
 
     private LocalDateTime lastUpdateAt = LocalDateTime.now();

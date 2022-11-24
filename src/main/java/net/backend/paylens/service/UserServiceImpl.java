@@ -47,24 +47,24 @@ public class UserServiceImpl implements UserService {
         userValidator.validateUserFound(userOpt);
 
         // instance object user
-        user = new User(request.getEmail(), request.getPassword());
+        user = new User(request.getUsername(), request.getEmail(), request.getPassword());
 
         // Save to database
         userRepository.save(user);
 
         // Instance object detail user
-        detailUser = new DetailUser(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
+        // detailUser = new DetailUser(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
 
         // Set user and detail user
-        detailUser.setUser(user);
-        detailUserRepository.save(detailUser);
+        // detailUser.setUser(user);
+        // detailUserRepository.save(detailUser);
 
         // Spesific data what will send
         data = new HashMap<>();
         data.put("email", user.getEmail());
-        data.put("firstName", detailUser.getFirstName());
-        data.put("lastName", detailUser.getLastName());
-        data.put("phoneNumber", detailUser.getPhoneNumber());
+        // data.put("firstName", detailUser.getFirstName());
+        // data.put("lastName", detailUser.getLastName());
+        // data.put("phoneNumber", detailUser.getPhoneNumber());
 
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Register success!", data);
@@ -114,19 +114,19 @@ public class UserServiceImpl implements UserService {
         Optional<DetailUser> detailOpt = detailUserRepository.findByUser(user);
 
         // Check if there is or not the detailed data
-        if (detailOpt.isPresent()) {
-            // Detail user : Database - Model/Entity/Detail user
-            detailUser = detailOpt.get();
-            // Update data
-            detailUser.setFirstName(request.getFirstName());
-            detailUser.setLastName(request.getLastName());
-            detailUser.setPhoneNumber(request.getPhoneNumber());
-        } else {
-            // Instance object detail user
-            detailUser = new DetailUser(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
-            // Set detail user
-            detailUser.setUser(user);
-        }
+        // if (detailOpt.isPresent()) {
+        //     // Detail user : Database - Model/Entity/Detail user
+        //     detailUser = detailOpt.get();
+        //     // Update data
+        //     detailUser.setFirstName(request.getFirstName());
+        //     detailUser.setLastName(request.getLastName());
+        //     detailUser.setPhoneNumber(request.getPhoneNumber());
+        // } else {
+        //     // Instance object detail user
+        //     detailUser = new DetailUser(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
+        //     // Set detail user
+        //     detailUser.setUser(user);
+        // }
 
         // Save to database
         detailUserRepository.save(detailUser);

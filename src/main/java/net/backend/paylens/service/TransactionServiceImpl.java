@@ -45,29 +45,28 @@ public class TransactionServiceImpl implements TransactionService{
     private TopUp topUp;
     private Balance balance;
     private Transfer transfer;
+    private User user;
     private ResponseData<Object> responseData;
-    private Map<Object, Object> data;
-    private List<Object> object;
 
     @Override
-    public ResponseData<Object> topUpMoney(TopUpDto amount) throws Exception {
+    public ResponseData<Object> topUpMoney(long id,TopUpDto request) throws Exception {
 
-        Optional<Balance> balanceOpt = balanceRepository.findById(amount.getId());
-        if (balanceOpt.isPresent()) {
-            updateBalance(amount.getAmount(), transfer);
-            responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up updated", topUp.getTopAmount());
-        }else{
-            balance = new Balance();
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isPresent()) {
+            //user
+            user = userOpt.get();
+            // user = user.getId();
+
             topUp = new TopUp();
-            topUp.setTopAmount(amount.getAmount());
-            topUp.setNotes(amount.getNotes());
-            // Long jumlah = balance.getMoney();
-            balance.setMoney(amount.getAmount());
-            // Long total = jumlah + amount.getAmount();
-
+            balance = new Balance();
+            topUp.setTopAmount(request.getAmount());
+            topUp.setNotes(request.getNotes());
+            balance.setMoney(request.getAmount());
             topUpRepository.save(topUp);
             balanceRepository.save(balance);
-            responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success", topUp.getTopAmount());
+            responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success Updated", topUp.getTopAmount());
+        }else{
+            responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "id not fnd", topUp.getTopAmount());
         }
         return responseData;
     }
