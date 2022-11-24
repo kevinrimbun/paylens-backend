@@ -26,7 +26,7 @@ public class UserController {
     private ResponseData<Object> responseData;
 
     // Register controller
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<Object> signUp(@RequestBody @Valid RegisterDto request) throws Exception {
         responseData = userService.register(request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);

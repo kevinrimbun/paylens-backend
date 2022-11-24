@@ -1,4 +1,4 @@
-package net.backend.paylens.services;
+package net.backend.paylens.service;
 
 import net.backend.paylens.model.dto.request.TransactionDto;
 import net.backend.paylens.model.dto.response.ResponseData;

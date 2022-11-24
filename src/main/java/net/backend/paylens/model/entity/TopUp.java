@@ -13,7 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table(name = "Top Up")
+@Table(name = "top_up")
 @Entity
 @Data
 @NoArgsConstructor
