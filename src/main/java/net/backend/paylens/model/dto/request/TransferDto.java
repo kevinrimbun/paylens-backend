@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class TopUpDto {
-  private Long amount;
-  private String notes;
-  private String email;
-  private Long id;
+public class TransferDto {
+    private Long amount;
+    private String notes;
+    private Long userId;
 }

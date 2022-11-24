@@ -1,5 +1,7 @@
 package net.backend.paylens.model.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +14,7 @@ import javax.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table(name = "books")
+@Table(name = "balance")
 @Entity
 @Data
 @NoArgsConstructor
@@ -24,12 +26,10 @@ public class Balance {
     @Column(length = 100)
     private Long money;
 
-    //one to one
-    // @OneToOne
-    // @JoinColumn(name = "user_id")
-    // private User userId;
+    private LocalDateTime lastUpdateAt = LocalDateTime.now();
 
-    // @ManyToOne
-    // @JoinColumn(name = "User_id")
-    // private User user;
+    // one to one
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User userId;
 }
