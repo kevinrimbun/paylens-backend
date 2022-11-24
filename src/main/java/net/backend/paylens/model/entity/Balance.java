@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table(name = "books")
+@Table(name = "balance")
 @Entity
 @Data
 @NoArgsConstructor
