@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseData<T> {
-    private Integer status;
-    private String message;
-    private T data;
+  private Integer status;
+  private String message;
+  private T data;
 }
