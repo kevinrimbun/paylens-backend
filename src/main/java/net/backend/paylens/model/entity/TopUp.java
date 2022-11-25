@@ -1,10 +1,14 @@
 package net.backend.paylens.model.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,12 +27,11 @@ public class TopUp {
     private Long id;
 
     //one to one
-    // @OneToOne
-    // @JoinColumn(name = "user_id")
-    // private User userId;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User userId;
 
-    @DateTimeFormat(iso = ISO.DATE, fallbackPatterns = { "M/d/yy", "dd.MM.yyyy" })
-    private String tanggal;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column
     private Long topAmount;
