@@ -9,7 +9,4 @@ import lombok.NoArgsConstructor;
 @Data
 public class TopUpDto {
   private Long amount;
-  private String notes;
-  private String email;
-  private Long id;
 }

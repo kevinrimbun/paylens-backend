@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class TransferDto {
     private Long amount;
     private String notes;
-    private Long userId;
+    private String username;
 }

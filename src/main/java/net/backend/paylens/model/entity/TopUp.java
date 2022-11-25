@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -27,7 +28,7 @@ public class TopUp {
     private Long id;
 
     //one to one
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User userId;
 
@@ -37,5 +38,5 @@ public class TopUp {
     private Long topAmount;
 
     @Column
-    private String notes;
+    private Boolean status = true;
 }
