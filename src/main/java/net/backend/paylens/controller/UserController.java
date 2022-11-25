@@ -2,6 +2,7 @@ package net.backend.paylens.controller;
 
 import javax.validation.Valid;
 
+import net.backend.paylens.model.dto.request.ChangePasswordDto;
 import net.backend.paylens.model.dto.request.LoginDto;
 import net.backend.paylens.model.dto.request.PinDto;
 import net.backend.paylens.model.dto.request.RegisterDto;
@@ -51,6 +52,12 @@ public class UserController {
     @PutMapping
     public ResponseEntity<Object> updateDetailUser(@RequestBody @Valid RegisterDto request) throws Exception {
         responseData = userService.updateDetailUser(request);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
+
+    @PutMapping("/change-password/{id}")
+    public ResponseEntity<Object> changePassword(@PathVariable long id, @RequestBody @Valid ChangePasswordDto request) throws Exception {
+        responseData = userService.changePassword(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 }

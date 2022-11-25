@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import net.backend.paylens.model.dto.request.ChangePasswordDto;
 import net.backend.paylens.model.dto.request.LoginDto;
 import net.backend.paylens.model.dto.request.PinDto;
 import net.backend.paylens.model.dto.request.RegisterDto;
@@ -157,5 +158,25 @@ public class UserServiceImpl implements UserService {
         detailUserRepository.save(detailUser);
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Create PIN success!", data);
         return responseData;
+    }
+
+    @Override
+    public ResponseData<Object> changePassword(long id, ChangePasswordDto request) throws Exception {
+        // TODO Auto-generated method stub
+       Optional<User> userOpt = userRepository.findById(id);
+
+       // Validate if user not found
+       userValidator.validateUserNotFound(userOpt);
+
+       // Get User
+       user = userOpt.get();
+       user.setPassword(request.getPassword());
+
+       userRepository.save(user);
+
+       responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Change Password success!", data);
+       return responseData;
+
+
     }
 }
