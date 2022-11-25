@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import net.backend.paylens.model.dto.request.LoginDto;
+import net.backend.paylens.model.dto.request.PinDto;
 import net.backend.paylens.model.dto.request.RegisterDto;
 import net.backend.paylens.model.dto.response.ResponseData;
 import net.backend.paylens.model.entity.DetailUser;
@@ -142,4 +143,19 @@ public class UserServiceImpl implements UserService {
         return responseData;
     }
 
+    @Override
+    public ResponseData<Object> createPin(long id, PinDto request) throws Exception {
+        // TODO Auto-generated method stub
+        Optional<User> userOpt = userRepository.findById(id);
+        userValidator.validateUserNotFound(userOpt);
+        
+        user = userOpt.get();
+        detailUser = new DetailUser();
+        detailUser.setUser(user);
+    
+        detailUser.setPin(request.getPin());
+        detailUserRepository.save(detailUser);
+        responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Create PIN success!", data);
+        return responseData;
+    }
 }

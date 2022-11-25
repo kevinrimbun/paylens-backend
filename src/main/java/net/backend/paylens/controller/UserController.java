@@ -3,12 +3,14 @@ package net.backend.paylens.controller;
 import javax.validation.Valid;
 
 import net.backend.paylens.model.dto.request.LoginDto;
+import net.backend.paylens.model.dto.request.PinDto;
 import net.backend.paylens.model.dto.request.RegisterDto;
 import net.backend.paylens.model.dto.response.ResponseData;
 import net.backend.paylens.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +31,12 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Object> signUp(@RequestBody @Valid RegisterDto request) throws Exception {
         responseData = userService.register(request);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
+
+    @PostMapping("/register/pin/{id}")
+    public ResponseEntity<Object> createPin(@PathVariable long id,  @RequestBody @Valid PinDto request) throws Exception {
+        responseData = userService.createPin(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
