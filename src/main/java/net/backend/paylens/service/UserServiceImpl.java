@@ -51,17 +51,22 @@ public class UserServiceImpl implements UserService {
 
         // instance object user
         user = new User(request.getUsername(), request.getEmail(), request.getPassword());
+        detailUser = new DetailUser();
+        int spacePosition = request.getUsername().indexOf(" ");
+        detailUser.setUser(user);
+        detailUser.setFirstName(request.getUsername().substring(0, spacePosition));
+        detailUser.setLastName(request.getUsername().substring(spacePosition + 1));
 
-        // detailUser 
         // Save to database
         userRepository.save(user);
+        detailUserRepository.save(detailUser);
 
         // Spesific data what will send
         data = new HashMap<>();
         data.put("userId", user.getId());
         data.put("username", user.getUsername());
         data.put("email", user.getEmail());
-
+ 
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Register success!", data);
         return responseData;
@@ -143,22 +148,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseData<Object> createPin(long id, PinDto request) throws Exception {
         // TODO Auto-generated method stub
-        Optional<User> userOpt = userRepository.findById(id);
-        userValidator.validateUserNotFound(userOpt);
-        
-        user = userOpt.get();
-        detailUser = new DetailUser();
-        detailUser.setUser(user);
-
-        // Spesific data what will send
-        data = new HashMap<>();
-        data.put("userId", user.getId());
-        data.put("username", user.getUsername());
-        data.put("email", user.getEmail());
+        Optional<DetailUser> detailUserOpt = detailUserRepository.findById(id);
+        if (detailUserOpt.isPresent()) {
+            detailUser = detailUserOpt.get();
     
-        detailUser.setPin(request.getPin());
-        detailUserRepository.save(detailUser);
-        responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Create PIN success!", data);
+            detailUser.setPin(request.getPin());
+    
+            data = new HashMap<>();
+            data.put("detailUserId", detailUser.getId());
+
+            // save
+            detailUserRepository.save(detailUser);
+    
+            // response data
+            responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Create PIN Success", data);
+        } else {
+            responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "Detail User Not Found", null);
+        }
         return responseData;
     }
 
@@ -219,7 +225,7 @@ public class UserServiceImpl implements UserService {
     
           data = new HashMap<>();
           data.put("detailUserId", detailUser.getId());
-          
+
           // save
           detailUserRepository.save(detailUser);
     
