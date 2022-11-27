@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.backend.paylens.model.dto.request.TopUpDto;
+import net.backend.paylens.model.dto.request.TransferDto;
 import net.backend.paylens.model.dto.response.ResponseData;
+import net.backend.paylens.model.entity.User;
 import net.backend.paylens.service.TransactionService;
 
 @RestController
@@ -31,9 +33,5 @@ public class TopUpController {
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
-    @PutMapping
-    public ResponseEntity<Object> updateBalance(@RequestBody TopUpDto request) throws Exception{
-        responseData = transactionService.updateBalance(request);
-        return ResponseEntity.status(responseData.getStatus()).body(responseData);
-    }
+
 }
