@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import net.backend.paylens.model.dto.request.ChangePasswordDto;
 import net.backend.paylens.model.dto.request.LoginDto;
+import net.backend.paylens.model.dto.request.PhoneNumberDto;
 import net.backend.paylens.model.dto.request.PinDto;
 import net.backend.paylens.model.dto.request.RegisterDto;
 import net.backend.paylens.model.dto.response.ResponseData;
@@ -11,6 +12,7 @@ import net.backend.paylens.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,6 +48,19 @@ public class UserController {
     public ResponseEntity<Object> signIn(@RequestBody @Valid LoginDto request) throws Exception {
         responseData = userService.login(request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
+
+    // Detail Users Controller
+    @PostMapping("/phone-number/{id}")
+    public ResponseEntity<Object> phoneNumber(@PathVariable long id,  @RequestBody @Valid PhoneNumberDto request) throws Exception {
+        responseData = userService.phoneNumber(id, request);
+        return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
+
+    @DeleteMapping("/phone-number/delete/{id}")
+    public ResponseEntity<Object> deleteBook(@PathVariable long id) throws Exception {
+      responseData = userService.deleteBook(id);
+      return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
     // Update detail user controller

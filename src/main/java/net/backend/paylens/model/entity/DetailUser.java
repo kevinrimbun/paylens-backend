@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 // import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,7 @@ public class DetailUser {
     private String lastName;
     @Column(length = 20)
     private String phoneNumber;
-    @Column(nullable = false)
+    @Column(length = 6)
     private String pin;
     // @Lob
     // @Column(length = 1000)
