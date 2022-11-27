@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 // import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,8 @@ public class DetailUser {
     private String lastName;
     @Column(length = 20)
     private String phoneNumber;
+    @Column(length = 6)
+    private String pin;
     // @Lob
     // @Column(length = 1000)
     // private byte[]  profilePicture;
@@ -38,10 +41,11 @@ public class DetailUser {
     private User user;
 
     // Constructor
-    public DetailUser(String firstName, String lastName, String phoneNumber) {
+    public DetailUser(String firstName, String lastName, String phoneNumber, String pin) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+        this.pin = pin;
         // this.profilePicture = profilePicture;
     }
 }
