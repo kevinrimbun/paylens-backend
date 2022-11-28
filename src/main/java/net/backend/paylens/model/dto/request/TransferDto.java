@@ -11,4 +11,5 @@ public class TransferDto {
     private Long amount;
     private String notes;
     private String username;
+    private String pin;
 }
