@@ -19,7 +19,7 @@ public class TransferController {
     @Autowired
     private TransactionService transactionService;
 
-    private ResponseData responseData;
+    private ResponseData<Object> responseData;
 
     @PostMapping("/{id}")
     public ResponseEntity<Object> transfer(@PathVariable long id,@RequestBody TransferDto request) throws Exception{
