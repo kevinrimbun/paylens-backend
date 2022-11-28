@@ -1,5 +1,7 @@
 package net.backend.paylens.model.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,15 +23,13 @@ public class Balance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100)
+    @Column(length = 100 , nullable = false)
     private Long money;
 
-    //one to one
-    // @OneToOne
-    // @JoinColumn(name = "user_id")
-    // private User userId;
+    private LocalDateTime lastUpdateAt = LocalDateTime.now();
 
-    // @ManyToOne
-    // @JoinColumn(name = "User_id")
-    // private User user;
+    // one to one
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User userId;
 }

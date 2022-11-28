@@ -7,5 +7,5 @@ import net.backend.paylens.model.entity.Transfer;
 
 @Repository
 public interface TransferRepository extends JpaRepository<Transfer , Long> {
-    
+
 }
