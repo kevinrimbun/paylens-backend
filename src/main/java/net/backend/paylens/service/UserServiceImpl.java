@@ -53,6 +53,8 @@ public class UserServiceImpl implements UserService {
         user = new User(request.getUsername(), request.getEmail(), request.getPassword());
         detailUser = new DetailUser();
         int spacePosition = request.getUsername().indexOf(" ");
+
+        // Set data
         detailUser.setUser(user);
         detailUser.setFirstName(request.getUsername().substring(0, spacePosition));
         detailUser.setLastName(request.getUsername().substring(spacePosition + 1));
@@ -116,20 +118,20 @@ public class UserServiceImpl implements UserService {
         // Looking for detailed data
         Optional<DetailUser> detailOpt = detailUserRepository.findByUser(user);
 
-        // Check if there is or not the detailed data
-        // if (detailOpt.isPresent()) {
-        //     // Detail user : Database - Model/Entity/Detail user
-        //     detailUser = detailOpt.get();
-        //     // Update data
-        //     detailUser.setFirstName(request.getFirstName());
-        //     detailUser.setLastName(request.getLastName());
-        //     detailUser.setPhoneNumber(request.getPhoneNumber());
-        // } else {
-        //     // Instance object detail user
-        //     detailUser = new DetailUser(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
-        //     // Set detail user
-        //     detailUser.setUser(user);
-        // }
+//         // Check if there is or not the detailed data
+//         if (detailOpt.isPresent()) {
+//             // Detail user : Database - Model/Entity/Detail user
+//             detailUser = detailOpt.get();
+//             // Update data
+//             detailUser.setFirstName(request.getFirstName());
+//             detailUser.setLastName(request.getLastName());
+//             detailUser.setPhoneNumber(request.getPhoneNumber());
+//         } else {
+//             // Instance object detail user
+//             detailUser = new DetailUser(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
+//             // Set detail user
+//             detailUser.setUser(user);
+//         }
 
         // Save to database
         detailUserRepository.save(detailUser);
@@ -145,32 +147,41 @@ public class UserServiceImpl implements UserService {
         return responseData;
     }
 
+    // Create PIN method
     @Override
     public ResponseData<Object> createPin(long id, PinDto request) throws Exception {
-        // TODO Auto-generated method stub
+
+        // Check the detail user is already exist or not
         Optional<DetailUser> detailUserOpt = detailUserRepository.findById(id);
+
+        // Conditional check
         if (detailUserOpt.isPresent()) {
+
+            // Get detail user
             detailUser = detailUserOpt.get();
-    
             detailUser.setPin(request.getPin());
-    
+
+            // Spesific data what will send
             data = new HashMap<>();
             data.put("detailUserId", detailUser.getId());
 
-            // save
+            // Save to database
             detailUserRepository.save(detailUser);
     
-            // response data
+            // Response data
             responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Create PIN Success", data);
         } else {
+            // Response data
             responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "Detail User Not Found", null);
         }
         return responseData;
     }
 
+    // CHange password method
     @Override
     public ResponseData<Object> changePassword(long id, ChangePasswordDto request) throws Exception {
-        // TODO Auto-generated method stub
+
+        // Check the user has been registered/login or not
         Optional<User> userOpt = userRepository.findById(id);
 
         // Validate if user not found
@@ -180,58 +191,75 @@ public class UserServiceImpl implements UserService {
         user = userOpt.get();
         user.setPassword(request.getPassword());
 
+        // Save to database
         userRepository.save(user);
 
+        // Spesific data what will send
         data = new HashMap<>();
         data.put("userId", user.getId());
         data.put("username", user.getUsername());
         data.put("email", user.getEmail());
 
+        // Response data
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Change Password success!", data);
         return responseData;
-
-
     }
 
+    // Add phone number method
     @Override
     public ResponseData<Object> phoneNumber(long id, PhoneNumberDto request) throws Exception {
-        // TODO Auto-generated method stub
+
+        // Check the detail user is found or not
         Optional<DetailUser> detailUserOpt = detailUserRepository.findById(id);
+
+        // Conditional check
         if (detailUserOpt.isPresent()) {
+
+            // Get detail user
             detailUser = detailUserOpt.get();
-            // borrowBook = new BorrowBook();
             detailUser.setPhoneNumber(request.getPhoneNumber());
 
+            // Spesific data what will send
             data = new HashMap<>();
             data.put("detailUserId", detailUser.getId());
-            detailUserRepository.save(detailUser);
-            responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Create Phone Number success!", data);
-            return responseData;
 
+            // Save to database
+            detailUserRepository.save(detailUser);
+
+            // Response data
+            responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Create Phone Number success!",data);
         } else {
-            responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "Detail User Not Found", null);
+            // Response data
+            responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "Detail User Not Found",null);
         }
         return responseData;
     }
 
+    // Delete phone number method
     @Override
     public ResponseData<Object> deletePhoneNumber(long id) throws Exception {
-        // TODO Auto-generated method stub
+
+        // Check the detail user is found or not
         Optional<DetailUser> detailUserOpt = detailUserRepository.findById(id);
+
+        // Conditional check
         if (detailUserOpt.isPresent()) {
-            detailUser = detailUserOpt.get();
-    
+
+          // Get detail user
+          detailUser = detailUserOpt.get();
           detailUser.setPhoneNumber(null);
-    
+
+          // Spesific data what will send
           data = new HashMap<>();
           data.put("detailUserId", detailUser.getId());
 
-          // save
+          // Save to database
           detailUserRepository.save(detailUser);
     
-          // response data
+          // Response data
           responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Delete Phone Number Success", data);
         } else {
+          // Response data
           responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "Detail User Not Found", null);
         }
         return responseData;
