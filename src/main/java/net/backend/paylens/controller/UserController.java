@@ -58,8 +58,8 @@ public class UserController {
     }
 
     @DeleteMapping("/phone-number/delete/{id}")
-    public ResponseEntity<Object> deleteBook(@PathVariable long id) throws Exception {
-      responseData = userService.deleteBook(id);
+    public ResponseEntity<Object> deletePhoneNumber(@PathVariable long id) throws Exception {
+      responseData = userService.deletePhoneNumber(id);
       return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
