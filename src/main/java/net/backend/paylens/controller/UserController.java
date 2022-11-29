@@ -71,11 +71,5 @@ public class UserController {
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 
-    // History transaction user controller
-    @GetMapping("/history/{id}")
-    public ResponseEntity<Object> addHistory(@PathVariable long id, TopUpDto requestTopUpDto, TransferDto requestTransferDto) throws Exception {
-//        responseData = historyService.getHistoryByUserId(id);
-        responseData = historyService.addHistory(requestTransferDto, requestTopUpDto, id);
-        return ResponseEntity.status(responseData.getStatus()).body(responseData);
-    }
+
 }

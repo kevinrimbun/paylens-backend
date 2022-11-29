@@ -12,5 +12,8 @@ import java.util.Optional;
 public interface HistoryRepository extends JpaRepository<History, Long> {
 
     List<History> findByIsDeleted(Boolean status);
-    Optional<History> findByUserId(User id);
+    Optional<List<History>> findByUser(User user);
+
+
+
 }

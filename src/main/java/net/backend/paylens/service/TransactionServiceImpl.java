@@ -2,6 +2,8 @@ package net.backend.paylens.service;
 
 import java.util.Optional;
 
+import net.backend.paylens.model.entity.*;
+import net.backend.paylens.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -10,14 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import net.backend.paylens.model.dto.request.TopUpDto;
 import net.backend.paylens.model.dto.request.TransferDto;
 import net.backend.paylens.model.dto.response.ResponseData;
-import net.backend.paylens.model.entity.Balance;
-import net.backend.paylens.model.entity.TopUp;
-import net.backend.paylens.model.entity.Transfer;
-import net.backend.paylens.model.entity.User;
-import net.backend.paylens.repository.BalanceRepository;
-import net.backend.paylens.repository.TopUpRepository;
-import net.backend.paylens.repository.TransferRepository;
-import net.backend.paylens.repository.UserRepository;
 import net.backend.paylens.validator.BalanceValidator;
 import net.backend.paylens.validator.UserValidator;
 
@@ -28,6 +22,8 @@ public class TransactionServiceImpl implements TransactionService{
     // Construct repository and validator
     @Autowired
     private BalanceRepository balanceRepository;
+    @Autowired
+    private HistoryRepository historyRepository;
     @Autowired
     private TransferRepository transferRepository;
     @Autowired
@@ -40,6 +36,7 @@ public class TransactionServiceImpl implements TransactionService{
     private BalanceValidator balanceValidator;
 
     // Attribute
+    private History history;
     private User user;
     private TopUp topUp;
     private Transfer transfer;
@@ -53,6 +50,9 @@ public class TransactionServiceImpl implements TransactionService{
 
         // Check data user from repository
         Optional<User> userOpt = userRepository.findById(id);
+
+        // Instance object
+        history = new History();
 
         // Validator
         userValidator.validateUserNotFound(userOpt);
@@ -84,10 +84,18 @@ public class TransactionServiceImpl implements TransactionService{
             topUpRepository.save(topUp);
             balanceRepository.save(balance);
 
+            // Set history
+            history.setTopUp(topUp);
+            history.setUser(user);
+            history.setTransfer(null);
+
+            // Save to database
+            historyRepository.save(history);
+
             // Response data
             responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success Updated", topUp.getTopAmount());
 
-        }else {
+        } else {
 
             // Instance object
             topUp = new TopUp();
@@ -104,6 +112,14 @@ public class TransactionServiceImpl implements TransactionService{
             // Save to database
             topUpRepository.save(topUp);
             balanceRepository.save(balance);
+
+            // Set history
+            history.setTopUp(topUp);
+            history.setUser(user);
+            history.setTransfer(null);
+
+            // Save to database
+            historyRepository.save(history);
 
             // Response data
             responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success Updated", topUp.getTopAmount());
@@ -131,6 +147,7 @@ public class TransactionServiceImpl implements TransactionService{
 
         // Instance object
         transfer = new Transfer();
+        history = new History();
 
         // Set data
         transfer.setUser(user);
@@ -173,6 +190,14 @@ public class TransactionServiceImpl implements TransactionService{
             // Save to database
             balanceRepository.save(balanceReceiver);
             transferRepository.save(transfer);
+
+            // Set history
+            history.setTransfer(transfer);
+            history.setUser(user);
+            history.setTopUp(null);
+
+            // Save to database
+            historyRepository.save(history);
 
             // Response data
             responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Transfer success Updated", transfer.getAmount());

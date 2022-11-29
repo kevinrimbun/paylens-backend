@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -31,103 +32,33 @@ public class HistoryServiceImpl implements HistoryService {
     private TopUpRepository topUpRepository;
 
     // Attribute
-    private History history;
     private User user;
     private Map<Object, Object> data;
     private List<History> historyList;
     private ResponseData<Object> responseData;
 
     @Override
-    public ResponseData<Object> addHistory(TransferDto requestTransferDto, TopUpDto requestTopUpDto, long id) {
-        //        Optional<History> historyOpt = historyRepository.findByUserId(user);
-        List<TopUp> topUpOpt = topUpRepository.findAll();
-        List<Transfer> transferOpt = transferRepository.findAll();
+    public ResponseData<Object> addHistory(long id) {
 
-        if (topUpOpt.isEmpty() && transferOpt.isEmpty()) {
+        // Search data user by id
+        user = userRepository.findById(id).get();
+
+        // Check from history repository is available user
+        Optional<List<History>> historyOpt = historyRepository.findByUser(user);
+
+        // Conditional check
+        if (historyOpt.isEmpty()) {
+
             // Response data
             responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "History data is not found!", null);
         } else {
 
-            // Instance object
-            history = new History();
-//            history = new History(requestTopUpDto.getUserId(), requestTopUpDto.getTopAmount(), requestTransferDto.getUsername(), requestTransferDto.getAmount());
-
-            // Set data
-            history.setTransfer(requestTransferDto.getUsername(), requestTransferDto.getAmount());
-            history.setTopUp(requestTopUpDto.getAmount());
-
-            // Save to database
-            historyRepository.save(history);
-
-            // Spesific data what will send
-            data.put("userId", history.getUser());
-            data.put("transfer", history.getTransfer());
-            data.put("topUp", history.getTopUp());
+            // Get all data
+            historyList = historyOpt.get();
 
             // Response data
-            responseData = new ResponseData<Object>(HttpStatus.FOUND.value(), "History available!", data);
-            return responseData;
+            responseData = new ResponseData<Object>(HttpStatus.FOUND.value(), "History available!", historyList);
         }
         return responseData;
     }
-
-//    // Get all history data method
-//    @Override
-//    public ResponseData<Object> getAll(Boolean status) {
-//
-//        // Conditional check
-//        if (status == null) {
-//            // Get all history data
-//            historyList = historyRepository.findAll();
-//        } else {
-//            historyList = historyRepository.findByIsDeleted(status);
-//        }
-//
-//        // Response data
-//        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", historyList);
-//        return responseData;
-//    }
-//
-//    // Get history data by id method
-//    @Override
-//    public ResponseData<Object> getHistoryByUserId(User id) {
-//
-////        Optional<History> historyOpt = historyRepository.findById(id.getId());
-//        Optional<History> historyOpt = userRepository.findById(id);
-//
-//        // Conditional check
-//        if (historyOpt.isPresent()) {
-//            // History : Database - Model/Entity/History
-//            history = historyOpt.get();
-//            // Response data
-//            responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", history);
-//        } else {
-//            // Response data
-//            responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "empty data", null);
-//        }
-//        return responseData;
-//    }
-//
-//    // Delete history data method
-//    @Override
-//    public ResponseData<Object> deleteHistory(long id) {
-//
-//        Optional<History> historyOpt = historyRepository.findById(id);
-//
-//        // Conditional check
-//        if (historyOpt.isPresent()) {
-//            // History : Database - Model/Entity/History
-//            history = historyOpt.get();
-//            // Set is deleted column = true
-//            history.setIsDeleted(true);
-//            // Save to database
-//            historyRepository.save(history);
-//            // Response data
-//            responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", null);
-//        } else {
-//            // Response data
-//            responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "empty data", null);
-//        }
-//        return responseData;
-//    }
 }

@@ -9,7 +9,7 @@ import net.backend.paylens.model.entity.Transfer;
 public interface HistoryService {
 
 //     Add history from user transaction
-    ResponseData<Object> addHistory(TransferDto requestTransferDto, TopUpDto requestTopUpDto, long id);
+    ResponseData<Object> addHistory(long id);
 
 //    // Get all history data
 //    ResponseData<Object> getAll(Boolean status);
