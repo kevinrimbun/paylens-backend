@@ -2,13 +2,9 @@ package net.backend.paylens.controller;
 
 import javax.validation.Valid;
 
-import net.backend.paylens.model.dto.request.ChangePasswordDto;
-import net.backend.paylens.model.dto.request.LoginDto;
-import net.backend.paylens.model.dto.request.PhoneNumberDto;
-import net.backend.paylens.model.dto.request.PinDto;
-import net.backend.paylens.model.dto.request.RegisterDto;
+import net.backend.paylens.model.dto.request.*;
 import net.backend.paylens.model.dto.response.ResponseData;
-import net.backend.paylens.model.entity.User;
+import net.backend.paylens.model.entity.Transfer;
 import net.backend.paylens.service.HistoryService;
 import net.backend.paylens.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,8 +73,9 @@ public class UserController {
 
     // History transaction user controller
     @GetMapping("/history/{id}")
-    public ResponseEntity<Object> getHistoryByUserId(@PathVariable User id) {
-        responseData = historyService.getHistoryByUserId(id);
+    public ResponseEntity<Object> addHistory(@PathVariable long id, TopUpDto requestTopUpDto, TransferDto requestTransferDto) throws Exception {
+//        responseData = historyService.getHistoryByUserId(id);
+        responseData = historyService.addHistory(requestTransferDto, requestTopUpDto, id);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }
 }

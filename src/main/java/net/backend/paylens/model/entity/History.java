@@ -31,4 +31,11 @@ public class History {
     private TopUp topUp;
 
     private Boolean isDeleted = false;
+
+    public History(User userId, Long topAmount, String username, Long amount) {
+    }
+    public void setTransfer(String username, Long amount) {
+    }
+    public void setTopUp(Long topAmount) {
+    }
 }
