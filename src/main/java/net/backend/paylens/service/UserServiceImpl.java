@@ -68,6 +68,7 @@ public class UserServiceImpl implements UserService {
 
         // Spesific data what will send
         data = new HashMap<>();
+        data.put("detailUserId", detailUser.getId());
         data.put("userId", user.getId());
         data.put("username", user.getUsername());
         data.put("email", user.getEmail());
@@ -91,14 +92,21 @@ public class UserServiceImpl implements UserService {
         // User : Database - Model/Entity/User
         user = userOpt.get();
 
+        // Optional<DetailUser> detailUserOpt = detailUserRepository.findById(request.)
+
         // Validate wrong password
         userValidator.validateWrongPassword(user.getPassword(), request.getPassword());
 
+        detailUser = new DetailUser();
+
+
         // Spesific data what will send
         data = new HashMap<>();
+        data.put("detailUserId", detailUser.getId());
         data.put("userId", user.getId());
         data.put("username", user.getUsername());
-        data.put("email", user.getEmail());
+        data.put("email", user.getEmail()); 
+        data.put("password", user.getPassword());
 
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Login success!", data);
