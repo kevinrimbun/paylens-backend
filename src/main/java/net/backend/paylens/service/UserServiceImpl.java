@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import net.backend.paylens.model.dto.request.ChangePasswordDto;
 import net.backend.paylens.model.dto.request.LoginDto;
+import net.backend.paylens.model.dto.request.MailDto;
 import net.backend.paylens.model.dto.request.PhoneNumberDto;
 import net.backend.paylens.model.dto.request.PinDto;
 import net.backend.paylens.model.dto.request.RegisterDto;
@@ -16,6 +17,8 @@ import net.backend.paylens.repository.DetailUserRepository;
 import net.backend.paylens.repository.UserRepository;
 import net.backend.paylens.validator.UserValidator;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +34,8 @@ public class UserServiceImpl implements UserService {
     private DetailUserRepository detailUserRepository;
     @Autowired
     private UserValidator userValidator;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     // Attribute
     private User user;
@@ -236,4 +241,5 @@ public class UserServiceImpl implements UserService {
         }
         return responseData;
     }
+
 }

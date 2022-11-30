@@ -4,10 +4,12 @@ import javax.validation.Valid;
 
 import net.backend.paylens.model.dto.request.ChangePasswordDto;
 import net.backend.paylens.model.dto.request.LoginDto;
+import net.backend.paylens.model.dto.request.MailDto;
 import net.backend.paylens.model.dto.request.PhoneNumberDto;
 import net.backend.paylens.model.dto.request.PinDto;
 import net.backend.paylens.model.dto.request.RegisterDto;
 import net.backend.paylens.model.dto.response.ResponseData;
+import net.backend.paylens.service.MailService;
 import net.backend.paylens.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,10 @@ public class UserController {
     // Construct service and response data
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MailService mailService;
+
     private ResponseData<Object> responseData;
 
     // Register controller
@@ -74,5 +80,11 @@ public class UserController {
     public ResponseEntity<Object> changePassword(@PathVariable long id, @RequestBody @Valid ChangePasswordDto request) throws Exception {
         responseData = userService.changePassword(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
+    }
+
+    @PostMapping("/email")
+    public ResponseEntity<Object> sendMail(@RequestBody MailDto request) throws Exception {
+        mailService.sendMail(request);
+        return ResponseEntity.ok().body("Email sent successfully!");
     }
 }

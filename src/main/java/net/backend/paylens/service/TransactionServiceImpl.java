@@ -73,21 +73,20 @@ public class TransactionServiceImpl implements TransactionService{
             if (balanceOpt.isPresent()) {
                 balance = balanceOpt.get();
 
-                // if (request.getPin().equals(detailUser.getPin())) {
-                    topUp = new TopUp();
+                topUp = new TopUp();
 
-                    //set user
-                    topUp.setUserId(user);
-                    balance.setUserId(user);
+                //set user
+                topUp.setUserId(user);
+                balance.setUserId(user);
 
-                    //request
-                    topUp.setTopAmount(request.getAmount());
-                    balance.setMoney(request.getAmount() + balance.getMoney());
+                //request
+                topUp.setTopAmount(request.getAmount());
+                balance.setMoney(request.getAmount() + balance.getMoney());
 
-                    //save
-                    topUpRepository.save(topUp);
-                    balanceRepository.save(balance);
-                    responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success Updated", topUp.getTopAmount());
+                //save
+                topUpRepository.save(topUp);
+                balanceRepository.save(balance);
+                responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success Updated", topUp.getTopAmount());
 
             }else{
                 topUp = new TopUp();
@@ -107,7 +106,7 @@ public class TransactionServiceImpl implements TransactionService{
                 responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success Updated", topUp.getTopAmount());
             }
         }else{
-            responseData = new ResponseData<Object>(HttpStatus.UNAUTHORIZED.value(), "Pin salah", topUp.getTopAmount());
+            responseData = new ResponseData<Object>(HttpStatus.UNAUTHORIZED.value(), "Pin salah", null);
         }
         return responseData;
     }
