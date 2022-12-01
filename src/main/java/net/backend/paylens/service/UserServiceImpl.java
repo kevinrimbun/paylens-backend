@@ -7,6 +7,7 @@ import java.util.Optional;
 import net.backend.paylens.config.jwt.JwtUtil;
 import net.backend.paylens.model.dto.request.ChangePasswordDto;
 import net.backend.paylens.model.dto.request.LoginDto;
+import net.backend.paylens.model.dto.request.MailDto;
 import net.backend.paylens.model.dto.request.PhoneNumberDto;
 import net.backend.paylens.model.dto.request.PinDto;
 import net.backend.paylens.model.dto.request.RegisterDto;
@@ -17,11 +18,13 @@ import net.backend.paylens.model.entity.Role;
 import net.backend.paylens.model.entity.User;
 import net.backend.paylens.model.entity.UserRole;
 import net.backend.paylens.repository.DetailUserRepository;
-import net.backend.paylens.repository.RoleRepository; 
+import net.backend.paylens.repository.RoleRepository;
 import net.backend.paylens.repository.UserRepository;
 import net.backend.paylens.repository.UserRoleRepository;
 import net.backend.paylens.validator.UserValidator;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -53,6 +56,8 @@ public class UserServiceImpl implements UserService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     // Attribute
     private User user;
@@ -100,7 +105,7 @@ public class UserServiceImpl implements UserService {
         userRole.setRole(role);
         userRole.setUser(user);
         userRoleRepository.save(userRole);
-    
+
 
         // Spesific data what will send
         data = new HashMap<>();
@@ -109,7 +114,7 @@ public class UserServiceImpl implements UserService {
         data.put("username", user.getUsername());
         data.put("email", user.getEmail());
         data.put("role", role);
- 
+
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Register success!", data);
         return responseData;
@@ -125,9 +130,9 @@ public class UserServiceImpl implements UserService {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
         request.getEmail(), request.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
-    
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
-    
+
         // generate token
         String jwtToken = jwtUtil.generateJwtToken(authentication);
         UserDetails userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -152,8 +157,8 @@ public class UserServiceImpl implements UserService {
         data.put("userId", user.getId());
         data.put("token", jwtToken);
         data.put("username", user.getUsername());
-        // data.put("email", user.getEmail()); 
-        data.put("email", userDetails.getUsername()); 
+        // data.put("email", user.getEmail());
+        data.put("email", userDetails.getUsername());
         data.put("password", user.getPassword());
 
         // Response data
@@ -323,4 +328,5 @@ public class UserServiceImpl implements UserService {
         }
         return responseData;
     }
+
 }
