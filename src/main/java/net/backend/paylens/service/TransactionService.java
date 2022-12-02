@@ -1,5 +1,6 @@
 package net.backend.paylens.service;
 
+import net.backend.paylens.model.dto.request.PinDto;
 import net.backend.paylens.model.dto.request.TopUpDto;
 import net.backend.paylens.model.dto.request.TransferDto;
 import net.backend.paylens.model.dto.response.ResponseData;

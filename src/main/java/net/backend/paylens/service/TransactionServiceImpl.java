@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.backend.paylens.model.dto.request.PinDto;
 import net.backend.paylens.model.dto.request.TopUpDto;
 import net.backend.paylens.model.dto.request.TransferDto;
 import net.backend.paylens.model.dto.response.ResponseData;
@@ -166,6 +167,7 @@ public class TransactionServiceImpl implements TransactionService{
                 transferRepository.save(transfer);
                 responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Transfer success Updated", transfer.getAmount());
             }
+            
         }else{
             responseData = new ResponseData<Object>(HttpStatus.UNAUTHORIZED.value(), "Pin salah", topUp.getTopAmount());
         }
