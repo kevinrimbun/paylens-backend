@@ -13,10 +13,12 @@ import net.backend.paylens.model.dto.request.RegisterDto;
 import net.backend.paylens.model.dto.response.ResponseData;
 import net.backend.paylens.model.entity.DetailUser;
 import net.backend.paylens.model.entity.ERole;
+import net.backend.paylens.model.entity.FileUpload;
 import net.backend.paylens.model.entity.Role;
 import net.backend.paylens.model.entity.User;
 import net.backend.paylens.model.entity.UserRole;
 import net.backend.paylens.repository.DetailUserRepository;
+import net.backend.paylens.repository.FileRepository;
 import net.backend.paylens.repository.RoleRepository; 
 import net.backend.paylens.repository.UserRepository;
 import net.backend.paylens.repository.UserRoleRepository;
@@ -48,6 +50,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRoleRepository userRoleRepository;
     @Autowired
+    private FileRepository fileRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -57,6 +61,7 @@ public class UserServiceImpl implements UserService {
     // Attribute
     private User user;
     private DetailUser detailUser;
+    private FileUpload fileUpload;
     private Map<Object, Object> data;
     private ResponseData<Object> responseData;
 
@@ -85,6 +90,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         detailUserRepository.save(detailUser);
 
+        // User Role
         UserRole userRole = new UserRole();
         Role role = new Role();
         if (request.getRole() == null) {
@@ -98,12 +104,19 @@ public class UserServiceImpl implements UserService {
         userRole.setRole(role);
         userRole.setUser(user);
         userRoleRepository.save(userRole);
+
+        // File Upload for Relation with userId
+        FileUpload fileUpload = new FileUpload();
+        fileUpload.setUser(user);
+        fileUpload.setData(null);
+        fileRepository.save(fileUpload);
     
 
         // Spesific data what will send
         data = new HashMap<>();
         data.put("detailUserId", detailUser.getId());
         data.put("userId", user.getId());
+        data.put("fileId", fileUpload.getId());
         data.put("username", user.getUsername());
         data.put("email", user.getEmail());
         data.put("role", role);
@@ -136,11 +149,6 @@ public class UserServiceImpl implements UserService {
         // User : Database - Model/Entity/User
         user = userOpt.get();
 
-        // Optional<DetailUser> detailUserOpt = detailUserRepository.findById(request.)
-
-        // Validate wrong password
-        // userValidator.validateWrongPassword(user.getPassword(), request.getPassword());
-
         detailUser = new DetailUser();
 
 
@@ -150,59 +158,13 @@ public class UserServiceImpl implements UserService {
         data.put("userId", user.getId());
         data.put("token", jwtToken);
         data.put("username", user.getUsername());
-        // data.put("email", user.getEmail()); 
         data.put("email", userDetails.getUsername()); 
-        data.put("password", user.getPassword());
 
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Login success!", data);
         return responseData;
     }
 
-    // Update user method
-    @Override
-    public ResponseData<Object> updateDetailUser(RegisterDto request) throws Exception {
-
-        // Check the email has been registered or not
-        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
-
-        // Validate user is not found
-        userValidator.validateUserNotFound(userOpt);
-
-        // User : Database - Model/Entity/User
-        user = userOpt.get();
-
-        // Looking for detailed data
-        Optional<DetailUser> detailOpt = detailUserRepository.findByUser(user);
-
-        // Check if there is or not the detailed data
-        // if (detailOpt.isPresent()) {
-        //     // Detail user : Database - Model/Entity/Detail user
-        //     detailUser = detailOpt.get();
-        //     // Update data
-        //     detailUser.setFirstName(request.getFirstName());
-        //     detailUser.setLastName(request.getLastName());
-        //     detailUser.setPhoneNumber(request.getPhoneNumber());
-        // } else {
-        //     // Instance object detail user
-        //     detailUser = new DetailUser(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
-        //     // Set detail user
-        //     detailUser.setUser(user);
-        // }
-
-        // Save to database
-        detailUserRepository.save(detailUser);
-
-        // Spesific data what will send
-        data = new HashMap<>();
-        data.put("firstName", detailUser.getFirstName());
-        data.put("lastName", detailUser.getLastName());
-        data.put("phoneNumber", detailUser.getPhoneNumber());
-
-        // Response data
-        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Update success!", data);
-        return responseData;
-    }
 
     @Override
     public ResponseData<Object> createPin(long id, PinDto request) throws Exception {
@@ -220,7 +182,7 @@ public class UserServiceImpl implements UserService {
             detailUserRepository.save(detailUser);
     
             // response data
-            responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Create PIN Success", data);
+            responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Create PIN Success", data);
         } else {
             responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "Detail User Not Found", null);
         }
@@ -292,6 +254,19 @@ public class UserServiceImpl implements UserService {
           responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Delete Phone Number Success", data);
         } else {
           responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "Detail User Not Found", null);
+        }
+        return responseData;
+    }
+
+    @Override
+    public ResponseData<Object> getById(long id) {
+        // TODO Auto-generated method stub
+        Optional<DetailUser> detailUserOpt = detailUserRepository.findById(id);
+        if ( detailUserOpt.isPresent()) {
+            detailUser = detailUserOpt.get();
+            responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", detailUser);
+        } else {
+            responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "empty data", null);
         }
         return responseData;
     }

@@ -1,6 +1,7 @@
 package net.backend.paylens.exception;
 
 import net.backend.paylens.exception.custom.CustomBadRequestException;
+import net.backend.paylens.exception.custom.CustomExpectationFailedException;
 import net.backend.paylens.exception.custom.CustomNotFoundException;
 import net.backend.paylens.exception.custom.CustomUnauthorizedException;
 import net.backend.paylens.model.dto.response.ErrorMessage;
@@ -136,5 +137,14 @@ public class CustomExceptionHandler {
         errorMessage = new ErrorMessage<Object>(HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(), e.getMessage(),
           null);
         return ResponseEntity.status(errorMessage.getStatus()).body(errorMessage);
+    }
+
+    @ExceptionHandler(value = CustomExpectationFailedException.class)
+    public ResponseEntity<Object> handleExpectationFailed(CustomExpectationFailedException e) {
+      LOGGER.error("Expectation failed: {}", e.getMessage());
+  
+      errorMessage = new ErrorMessage<Object>(HttpStatus.EXPECTATION_FAILED.value(), LocalDateTime.now(), e.getMessage(),
+          null);
+      return ResponseEntity.status(errorMessage.getStatus()).body(errorMessage);
     }
 }
