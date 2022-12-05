@@ -12,6 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 import net.backend.paylens.model.dto.request.TopUpDto;
 import net.backend.paylens.model.dto.request.TransferDto;
 import net.backend.paylens.model.dto.response.ResponseData;
+import net.backend.paylens.model.entity.Balance;
+import net.backend.paylens.model.entity.DetailUser;
+import net.backend.paylens.model.entity.TopUp;
+import net.backend.paylens.model.entity.Transfer;
+import net.backend.paylens.model.entity.User;
+import net.backend.paylens.repository.BalanceRepository;
+import net.backend.paylens.repository.DetailUserRepository;
+import net.backend.paylens.repository.TopUpRepository;
+import net.backend.paylens.repository.TransferRepository;
+import net.backend.paylens.repository.UserRepository;
 import net.backend.paylens.validator.BalanceValidator;
 import net.backend.paylens.validator.UserValidator;
 
@@ -38,11 +48,15 @@ public class TransactionServiceImpl implements TransactionService{
     // Attribute
     private History history;
     private User user;
+    @Autowired
+    private DetailUserRepository detailUserRepository;
+
     private TopUp topUp;
     private Transfer transfer;
     private Balance balance;
     private Balance balanceReceiver;
     private ResponseData<Object> responseData;
+    private DetailUser detailUser;
 
     //  Top up method
     @Override
@@ -59,6 +73,15 @@ public class TransactionServiceImpl implements TransactionService{
 
         // Get user
         user = userOpt.get();
+
+        //Detail user
+        Optional<DetailUser> detailUserOpt1 = detailUserRepository.findByUser(user);
+        detailUser = detailUserOpt1.get();
+        if (request.getPin().equals(detailUser.getPin())) {
+
+            Optional<Balance> balanceOpt  = balanceRepository.findByUserId(user);
+            if (balanceOpt.isPresent()) {
+                balance = balanceOpt.get();
 
         // Check data balance from repository
         Optional<Balance> balanceOpt  = balanceRepository.findByUserId(user);
@@ -144,6 +167,14 @@ public class TransactionServiceImpl implements TransactionService{
         // Validator
         balanceValidator.validateBalanceNotFound(balanceOpt);
         balance = balanceOpt.get();
+        //Validate User Pin
+        Optional<DetailUser> detailUserOpt1 = detailUserRepository.findByUser(user);
+        detailUser = detailUserOpt1.get();
+        if (data.getPin().equals(detailUser.getPin())) {
+            //Validate balance
+            Optional<Balance> balanceOpt  = balanceRepository.findByUserId(user);
+            balanceValidator.validateBalanceNotFound(balanceOpt);
+            balance = balanceOpt.get();
 
         // Instance object
         transfer = new Transfer();
@@ -153,7 +184,7 @@ public class TransactionServiceImpl implements TransactionService{
         transfer.setUser(user);
         transfer.setAmount(data.getAmount());
         transfer.setNotes(data.getNotes());
-        
+
         // New attribute
         Long balancePast = balance.getMoney();
 
@@ -187,9 +218,9 @@ public class TransactionServiceImpl implements TransactionService{
             //set balance receiver
             balanceReceiver.setMoney(balanceReceiver.getMoney() + data.getAmount());
 
-            // Save to database
-            balanceRepository.save(balanceReceiver);
-            transferRepository.save(transfer);
+                // Save to database
+                balanceRepository.save(balanceReceiver);
+                transferRepository.save(transfer);
 
             // Set history
             history.setTransfer(transfer);
@@ -200,7 +231,10 @@ public class TransactionServiceImpl implements TransactionService{
             historyRepository.save(history);
 
             // Response data
-            responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Transfer success Updated", transfer.getAmount());
+                responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Transfer success Updated", transfer.getAmount());
+            }
+        }else{
+            responseData = new ResponseData<Object>(HttpStatus.UNAUTHORIZED.value(), "Pin salah", topUp.getTopAmount());
         }
         return responseData;
     }

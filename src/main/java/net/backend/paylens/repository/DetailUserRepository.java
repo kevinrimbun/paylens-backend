@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface DetailUserRepository extends JpaRepository<DetailUser, Long> {
 
     Optional<DetailUser> findByUser(User user);
+    Optional<DetailUser> findByPin(String string);
 }
