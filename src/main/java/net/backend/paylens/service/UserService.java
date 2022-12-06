@@ -10,6 +10,10 @@ import net.backend.paylens.model.dto.response.ResponseData;
 
 public interface UserService {
     ResponseData<Object> register(RegisterDto request) throws Exception;
+
+    // Update user method
+    ResponseData<Object> updateDetailUser(RegisterDto request) throws Exception;
+
     ResponseData<Object> createPin(long id, PinDto request) throws Exception;
     ResponseData<Object> login(LoginDto request) throws Exception;
     ResponseData<Object> changePassword(long id, ChangePasswordDto request) throws Exception;

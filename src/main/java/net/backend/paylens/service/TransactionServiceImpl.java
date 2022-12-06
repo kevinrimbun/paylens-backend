@@ -76,86 +76,90 @@ public class TransactionServiceImpl implements TransactionService{
 
         //Detail user
         Optional<DetailUser> detailUserOpt1 = detailUserRepository.findByUser(user);
+
+        // Get detail user
         detailUser = detailUserOpt1.get();
-        if (request.getPin().equals(detailUser.getPin())) {
-
-            Optional<Balance> balanceOpt  = balanceRepository.findByUserId(user);
-            if (balanceOpt.isPresent()) {
-                balance = balanceOpt.get();
-
-        // Check data balance from repository
-        Optional<Balance> balanceOpt  = balanceRepository.findByUserId(user);
 
         // Conditional check
-        if (balanceOpt.isPresent()) {
+        if (request.getPin().equals(detailUser.getPin())) {
 
-            // Get balance
-            balance = balanceOpt.get();
+            // Check data balance from repository
+            Optional<Balance> balanceOpt = balanceRepository.findByUserId(user);
 
-            // Instance object
-            topUp = new TopUp();
+            // Conditional check
+            if (balanceOpt.isPresent()) {
 
-            // Set user
-            topUp.setUserId(user);
-            balance.setUserId(user);
+                // Get balance
+                balance = balanceOpt.get();
 
-            // Request
-            topUp.setTopAmount(request.getAmount());
-            balance.setMoney(request.getAmount() + balance.getMoney());
+                // Instance object
+                topUp = new TopUp();
 
-            // Save to database
-            topUpRepository.save(topUp);
-            balanceRepository.save(balance);
+                // Set user
+                topUp.setUserId(user);
+                balance.setUserId(user);
 
-            // Set history
-            history.setTopUp(topUp);
-            history.setUser(user);
-            history.setTransfer(null);
+                // Request
+                topUp.setTopAmount(request.getAmount());
+                balance.setMoney(request.getAmount() + balance.getMoney());
 
-            // Save to database
-            historyRepository.save(history);
+                // Save to database
+                topUpRepository.save(topUp);
+                balanceRepository.save(balance);
 
-            // Response data
-            responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success Updated", topUp.getTopAmount());
+                // Set history
+                history.setTopUp(topUp);
+                history.setUser(user);
+                history.setTransfer(null);
 
-        } else {
+                // Save to database
+                historyRepository.save(history);
 
-            // Instance object
-            topUp = new TopUp();
-            balance = new Balance();
+                // Response data
+                responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success Updated", topUp.getTopAmount());
 
-            // Set user
-            topUp.setUserId(user);
-            balance.setUserId(user);
+            } else {
 
-            // Request
-            topUp.setTopAmount(request.getAmount());
-            balance.setMoney(request.getAmount());
+                // Instance object
+                topUp = new TopUp();
+                balance = new Balance();
 
-            // Save to database
-            topUpRepository.save(topUp);
-            balanceRepository.save(balance);
+                // Set user
+                topUp.setUserId(user);
+                balance.setUserId(user);
 
-            // Set history
-            history.setTopUp(topUp);
-            history.setUser(user);
-            history.setTransfer(null);
+                // Request
+                topUp.setTopAmount(request.getAmount());
+                balance.setMoney(request.getAmount());
 
-            // Save to database
-            historyRepository.save(history);
+                // Save to database
+                topUpRepository.save(topUp);
+                balanceRepository.save(balance);
 
-            // Response data
-            responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success Updated", topUp.getTopAmount());
+                // Set history
+                history.setTopUp(topUp);
+                history.setUser(user);
+                history.setTransfer(null);
+
+                // Save to database
+                historyRepository.save(history);
+
+                // Response data
+                responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success Updated", topUp.getTopAmount());
+            }
         }
         return responseData;
     }
 
     // Transfer method
     @Override
-    public ResponseData<Object> transfer(long id,TransferDto data) throws Exception {
+    public ResponseData<Object> transfer(long id, TransferDto data) throws Exception {
 
         // Check data user from repository
         Optional<User> userOpt = userRepository.findById(id);
+
+        // Instance object
+        history = new History();
 
         // Validator
         userValidator.validateUserNotFound(userOpt);
@@ -171,14 +175,14 @@ public class TransactionServiceImpl implements TransactionService{
         Optional<DetailUser> detailUserOpt1 = detailUserRepository.findByUser(user);
         detailUser = detailUserOpt1.get();
         if (data.getPin().equals(detailUser.getPin())) {
+
             //Validate balance
-            Optional<Balance> balanceOpt  = balanceRepository.findByUserId(user);
+//            Optional<Balance> balanceOpt  = balanceRepository.findByUserId(user);
             balanceValidator.validateBalanceNotFound(balanceOpt);
             balance = balanceOpt.get();
 
         // Instance object
-        transfer = new Transfer();
-        history = new History();
+            transfer = new Transfer();
 
         // Set data
         transfer.setUser(user);
@@ -205,7 +209,9 @@ public class TransactionServiceImpl implements TransactionService{
             // Validate User Receiver
             Optional<User> userOpt2 = userRepository.findByUsername(data.getUsername());
             userValidator.validateUserNotFound(userOpt2);
-            user = userOpt2.get();
+
+            // Instance object
+            User user02 = userOpt2.get();
 
             // Validate Balance
             Optional<Balance> balanceReceiverOpt  = balanceRepository.findByUserId(user);
@@ -213,7 +219,7 @@ public class TransactionServiceImpl implements TransactionService{
             balanceReceiver = balanceReceiverOpt.get();
 
             // set id
-            transfer.setUserReceiver(user);
+            transfer.setUserReceiver(user02);
             
             //set balance receiver
             balanceReceiver.setMoney(balanceReceiver.getMoney() + data.getAmount());

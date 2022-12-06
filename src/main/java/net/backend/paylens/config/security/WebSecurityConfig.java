@@ -61,7 +61,7 @@ public class WebSecurityConfig {
       http = http.exceptionHandling().authenticationEntryPoint(authEntryPoint).and();
   
       // Endpoints Permition
-      http.authorizeRequests().antMatchers("/").permitAll()
+      http.authorizeRequests().antMatchers("/**").permitAll()
           .antMatchers(HttpMethod.POST, "/users/**").permitAll()
           .anyRequest().authenticated();
   
