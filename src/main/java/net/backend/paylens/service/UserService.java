@@ -12,9 +12,8 @@ public interface UserService {
     ResponseData<Object> register(RegisterDto request) throws Exception;
     ResponseData<Object> createPin(long id, PinDto request) throws Exception;
     ResponseData<Object> login(LoginDto request) throws Exception;
-    ResponseData<Object> updateDetailUser(RegisterDto request) throws Exception;
     ResponseData<Object> changePassword(long id, ChangePasswordDto request) throws Exception;
     ResponseData<Object> phoneNumber(long id, PhoneNumberDto request) throws Exception;
     ResponseData<Object> deletePhoneNumber(long id) throws Exception;
-
+ResponseData<Object> getById(long id);
 }
