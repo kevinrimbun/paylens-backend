@@ -3,6 +3,7 @@ package net.backend.paylens.controller;
 import javax.validation.Valid;
 
 import net.backend.paylens.model.dto.request.ChangePasswordDto;
+import net.backend.paylens.model.dto.request.ForgotPasswordDto;
 import net.backend.paylens.model.dto.request.LoginDto;
 import net.backend.paylens.model.dto.request.MailDto;
 import net.backend.paylens.model.dto.request.PhoneNumberDto;
@@ -90,7 +91,7 @@ public class UserController {
     }
 
     @PutMapping("/forgot-password/{id}")
-    public ResponseEntity<Object> forgotPassword(@PathVariable long id, @RequestBody @Valid ChangePasswordDto request) throws Exception {
+    public ResponseEntity<Object> forgotPassword(@PathVariable long id, @RequestBody @Valid ForgotPasswordDto request) throws Exception {
         responseData = userService.forgotPassword(id, request);
         return ResponseEntity.status(responseData.getStatus()).body(responseData);
     }

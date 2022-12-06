@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChangePasswordDto {
+public class ForgotPasswordDto {
     @NotBlank(message = "Password is required!")
-    private String oldPassword;
-    private String newPassword;
+    private String password;
 }

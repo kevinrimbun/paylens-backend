@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import net.backend.paylens.config.jwt.JwtUtil;
 import net.backend.paylens.model.dto.request.ChangePasswordDto;
+import net.backend.paylens.model.dto.request.ForgotPasswordDto;
 import net.backend.paylens.model.dto.request.LoginDto;
 import net.backend.paylens.model.dto.request.MailDto;
 import net.backend.paylens.model.dto.request.PhoneNumberDto;
@@ -12,13 +14,25 @@ import net.backend.paylens.model.dto.request.PinDto;
 import net.backend.paylens.model.dto.request.RegisterDto;
 import net.backend.paylens.model.dto.response.ResponseData;
 import net.backend.paylens.model.entity.DetailUser;
+import net.backend.paylens.model.entity.ERole;
+import net.backend.paylens.model.entity.Role;
 import net.backend.paylens.model.entity.User;
+import net.backend.paylens.model.entity.UserRole;
 import net.backend.paylens.repository.DetailUserRepository;
+import net.backend.paylens.repository.RoleRepository; 
 import net.backend.paylens.repository.UserRepository;
+import net.backend.paylens.repository.UserRoleRepository;
 import net.backend.paylens.validator.UserValidator;
 import org.springframework.http.HttpStatus;
+
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +50,17 @@ public class UserServiceImpl implements UserService {
     private UserValidator userValidator;
     @Autowired
     private JavaMailSender javaMailSender;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtUtil jwtUtil;
+
 
     // Attribute
     private User user;
@@ -43,7 +68,7 @@ public class UserServiceImpl implements UserService {
     private Map<Object, Object> data;
     private ResponseData<Object> responseData;
 
-    // Register method
+    // Register
     @Override
     // DTO - Request : User input
     public ResponseData<Object> register(RegisterDto request) throws Exception {
@@ -55,7 +80,9 @@ public class UserServiceImpl implements UserService {
         userValidator.validateUserFound(userOpt);
 
         // instance object user
-        user = new User(request.getUsername(), request.getEmail(), request.getPassword());
+        user = new User(request.getUsername(), request.getEmail(), passwordEncoder.encode(request.getPassword()));
+
+        // FName & LName for Detail User
         detailUser = new DetailUser();
         int spacePosition = request.getUsername().indexOf(" ");
         detailUser.setUser(user);
@@ -66,12 +93,28 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         detailUserRepository.save(detailUser);
 
+        UserRole userRole = new UserRole();
+        Role role = new Role();
+        if (request.getRole() == null) {
+            role = roleRepository.findByRoleName(ERole.USER);
+        } else if (ERole.SUPER_ADMIN.name().equalsIgnoreCase(request.getRole())) {
+            role = roleRepository.findByRoleName(ERole.SUPER_ADMIN);
+        } else if (ERole.SUPER_USER.name().equalsIgnoreCase(request.getRole())) {
+            role = roleRepository.findByRoleName(ERole.SUPER_USER);
+        }
+
+        userRole.setRole(role);
+        userRole.setUser(user);
+        userRoleRepository.save(userRole);
+    
+
         // Spesific data what will send
         data = new HashMap<>();
         data.put("detailUserId", detailUser.getId());
         data.put("userId", user.getId());
         data.put("username", user.getUsername());
         data.put("email", user.getEmail());
+        data.put("role", role);
  
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Register success!", data);
@@ -85,6 +128,15 @@ public class UserServiceImpl implements UserService {
 
         // Check the email has been registered or not
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+        request.getEmail(), request.getPassword());
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+    
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    
+        // generate token
+        String jwtToken = jwtUtil.generateJwtToken(authentication);
+        UserDetails userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         // Validate user is not found
         userValidator.validateUserNotFound(userOpt);
@@ -95,7 +147,7 @@ public class UserServiceImpl implements UserService {
         // Optional<DetailUser> detailUserOpt = detailUserRepository.findById(request.)
 
         // Validate wrong password
-        userValidator.validateWrongPassword(user.getPassword(), request.getPassword());
+        // userValidator.validateWrongPassword(user.getPassword(), request.getPassword());
 
         detailUser = new DetailUser();
 
@@ -104,9 +156,10 @@ public class UserServiceImpl implements UserService {
         data = new HashMap<>();
         data.put("detailUserId", detailUser.getId());
         data.put("userId", user.getId());
+        data.put("token", jwtToken);
         data.put("username", user.getUsername());
-        data.put("email", user.getEmail()); 
-        data.put("password", user.getPassword());
+        // data.put("email", user.getEmail()); 
+        data.put("email", userDetails.getUsername()); 
 
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Login success!", data);
@@ -188,10 +241,12 @@ public class UserServiceImpl implements UserService {
 
         // Validate if user not found
         userValidator.validateUserNotFound(userOpt);
-
-        // Get User
         user = userOpt.get();
-        user.setPassword(request.getPassword());
+        userValidator.validateWrongPassword(user.getPassword(), request.getOldPassword());
+
+        
+        // Get User
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()) );
 
         userRepository.save(user);
 
@@ -247,6 +302,29 @@ public class UserServiceImpl implements UserService {
         } else {
           responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "Detail User Not Found", null);
         }
+        return responseData;
+    }
+
+    @Override
+    public ResponseData<Object> forgotPassword(long id, ForgotPasswordDto request) throws Exception {
+        // TODO Auto-generated method stub
+        Optional<User> userOpt = userRepository.findById(id);
+
+        // Validate if user not found
+        userValidator.validateUserNotFound(userOpt);
+
+        // Get User
+        user = userOpt.get();
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        userRepository.save(user);
+
+        data = new HashMap<>();
+        data.put("userId", user.getId());
+        data.put("username", user.getUsername());
+        data.put("email", user.getEmail());
+
+        responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Change Password success!", data);
         return responseData;
     }
 
