@@ -149,7 +149,9 @@ public class UserServiceImpl implements UserService {
         // User : Database - Model/Entity/User
         user = userOpt.get();
 
-        detailUser = new DetailUser();
+        // detailUser = new DetailUser();
+        Optional<DetailUser> detailUserOpt = detailUserRepository.findByUser(user);
+        detailUser = detailUserOpt.get();
 
 
         // Spesific data what will send
