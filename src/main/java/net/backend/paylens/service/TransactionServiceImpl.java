@@ -47,20 +47,20 @@ public class TransactionServiceImpl implements TransactionService{
     private UserValidator userValidator;
     @Autowired
     private BalanceValidator balanceValidator;
+    @Autowired
+    private DetailUserRepository detailUserRepository;
 
     // Attribute
     private History history;
     private User user;
-    @Autowired
-    private DetailUserRepository detailUserRepository;
 
+    private DetailUser detailUser;
     private TopUp topUp;
     private Transfer transfer;
     private Balance balance;
     private Balance balanceReceiver;
     private Map<Object, Object> data;
     private ResponseData<Object> responseData;
-    private DetailUser detailUser;
 
     //  Top up method
     @Override
@@ -236,7 +236,7 @@ public class TransactionServiceImpl implements TransactionService{
 
                 // set id
                 transfer.setUserReceiver(user02);
-                
+
                 //set balance receiver
                 balanceReceiver.setMoney(balanceReceiver.getMoney() + data.getAmount());
 
@@ -255,11 +255,11 @@ public class TransactionServiceImpl implements TransactionService{
                 // Response data
                 responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Transfer success Updated", transfer.getAmount());
                 }
-                
+
             }else{
                 responseData = new ResponseData<Object>(HttpStatus.UNAUTHORIZED.value(), "Pin salah", null);
             }
         return responseData;
     }
-    
+
 }

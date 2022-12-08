@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
         data.put("username", user.getUsername());
         data.put("email", user.getEmail());
         data.put("role", role);
-        data.put("balance", balance.getMoney());
+//        data.put("balance", balance.getMoney());
 
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Register success!", data);
@@ -175,7 +175,7 @@ public class UserServiceImpl implements UserService {
         data.put("username", user.getUsername());
         // data.put("email", user.getEmail()); 
         data.put("email", userDetails.getUsername()); 
-        data.put("balance", balance.getMoney());
+//        data.put("balance", balance.getMoney());
 
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Login success!", data);
