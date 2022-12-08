@@ -166,6 +166,10 @@ public class UserServiceImpl implements UserService {
         detailUser = new DetailUser();
         Optional<Balance> balanceOpt  = balanceRepository.findByUserId(user);
         balance = balanceOpt.get();
+        // detailUser = new DetailUser();
+        Optional<DetailUser> detailUserOpt = detailUserRepository.findByUser(user);
+        detailUser = detailUserOpt.get();
+
 
         // Spesific data what will send
         data = new HashMap<>();
