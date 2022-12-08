@@ -125,6 +125,14 @@ public class UserServiceImpl implements UserService {
         fileRepository.save(fileUpload);
 
 
+        Optional<Balance> balanceOpt  = balanceRepository.findByUserId(user);
+        if (balanceOpt.isEmpty()) {
+            balance = new Balance();
+            balance.setMoney(0L);
+            balance.setUserId(user);
+            balanceRepository.save(balance);
+        }
+
         // Spesific data what will send
         data = new HashMap<>();
         data.put("detailUserId", detailUser.getId());
@@ -133,7 +141,6 @@ public class UserServiceImpl implements UserService {
         data.put("username", user.getUsername());
         data.put("email", user.getEmail());
         data.put("role", role);
-        data.put("balance", balance.getMoney());
 
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Register success!", data);
@@ -165,22 +172,30 @@ public class UserServiceImpl implements UserService {
 
         detailUser = new DetailUser();
         Optional<Balance> balanceOpt  = balanceRepository.findByUserId(user);
-        balance = balanceOpt.get();
+        data = new HashMap<>();
+
+        if (balanceOpt.isPresent()) {
+            balance = balanceOpt.get();
+            data.put("balance", balance.getMoney());
+        }
         // detailUser = new DetailUser();
         Optional<DetailUser> detailUserOpt = detailUserRepository.findByUser(user);
-        detailUser = detailUserOpt.get();
+       
 
+        if (detailUserOpt.isPresent()) {
+            detailUser = detailUserOpt.get();
+            data.put("detailUserId", detailUser.getId());
+        }
 
         // Spesific data what will send
-        data = new HashMap<>();
-        data.put("detailUserId", detailUser.getId());
+        
+        
         data.put("userId", user.getId());
         data.put("token", jwtToken);
         data.put("username", user.getUsername());
         // data.put("email", user.getEmail()); 
         data.put("email", userDetails.getUsername()); 
-        data.put("balance", balance.getMoney());
-
+       
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Login success!", data);
         return responseData;
