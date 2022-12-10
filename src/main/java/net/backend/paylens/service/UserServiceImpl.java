@@ -118,6 +118,7 @@ public class UserServiceImpl implements UserService {
         userRole.setRole(role);
         userRole.setUser(user);
         userRoleRepository.save(userRole);
+
 // File Upload for Relation with userId
         FileUpload fileUpload = new FileUpload();
         fileUpload.setUser(user);
@@ -391,7 +392,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseData<Object> getById(long id) {
         // TODO Auto-generated method stub
-        return null;
+        Optional<DetailUser> detailUserOpt = detailUserRepository.findById(id);
+        if ( detailUserOpt.isPresent()) {
+            detailUser = detailUserOpt.get();
+            responseData = new ResponseData<Object>(HttpStatus.OK.value(), "success", detailUser);
+        } else {
+            responseData = new ResponseData<Object>(HttpStatus.NOT_FOUND.value(), "empty data", null);
+        }
+        return responseData;
+
     }
 
 }
