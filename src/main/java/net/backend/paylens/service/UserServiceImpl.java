@@ -181,7 +181,9 @@ public class UserServiceImpl implements UserService {
         }
         // detailUser = new DetailUser();
         Optional<DetailUser> detailUserOpt = detailUserRepository.findByUser(user);
-       
+        detailUser = detailUserOpt.get();
+        Optional<FileUpload> fileUploadOpt = fileRepository.findByUser(user);
+        fileUpload = fileUploadOpt.get();
 
         if (detailUserOpt.isPresent()) {
             detailUser = detailUserOpt.get();
@@ -189,14 +191,12 @@ public class UserServiceImpl implements UserService {
         }
 
         // Spesific data what will send
-        
-        
+        data.put("fileId", fileUpload.getId());
         data.put("userId", user.getId());
         data.put("token", jwtToken);
         data.put("username", user.getUsername());
-        // data.put("email", user.getEmail()); 
-        data.put("email", userDetails.getUsername()); 
-       
+        data.put("email", userDetails.getUsername());
+
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Login success!", data);
         return responseData;
