@@ -63,6 +63,7 @@ public class WebSecurityConfig {
       // Endpoints Permition
       http.authorizeRequests().antMatchers("/").permitAll()
           .antMatchers(HttpMethod.POST, "/users/**").permitAll()
+          .antMatchers(HttpMethod.GET, "/files/**").permitAll()
           .anyRequest().authenticated();
   
       // Set authentication provider

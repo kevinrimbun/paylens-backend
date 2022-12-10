@@ -11,6 +11,6 @@ public class CustomCorsOrigin implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
       // TODO Auto-generated method stub
-      registry.addMapping("/**").allowedMethods("*").allowedOriginPatterns("http://localhost:3000");
+      registry.addMapping("/**").allowedMethods("*").allowedOriginPatterns("*");
     }
 }

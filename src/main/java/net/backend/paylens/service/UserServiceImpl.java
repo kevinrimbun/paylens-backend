@@ -152,15 +152,18 @@ public class UserServiceImpl implements UserService {
         // detailUser = new DetailUser();
         Optional<DetailUser> detailUserOpt = detailUserRepository.findByUser(user);
         detailUser = detailUserOpt.get();
+        Optional<FileUpload> fileUploadOpt = fileRepository.findByUser(user);
+        fileUpload = fileUploadOpt.get();
 
 
         // Spesific data what will send
         data = new HashMap<>();
         data.put("detailUserId", detailUser.getId());
+        data.put("fileId", fileUpload.getId());
         data.put("userId", user.getId());
         data.put("token", jwtToken);
         data.put("username", user.getUsername());
-        data.put("email", userDetails.getUsername()); 
+        data.put("email", userDetails.getUsername());
 
         // Response data
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Login success!", data);
