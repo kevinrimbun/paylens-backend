@@ -202,51 +202,6 @@ public class UserServiceImpl implements UserService {
         return responseData;
     }
 
-    // Update user method
-    @Override
-    public ResponseData<Object> updateDetailUser(RegisterDto request) throws Exception {
-
-        // Check the email has been registered or not
-        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
-
-        // Validate user is not found
-        userValidator.validateUserNotFound(userOpt);
-
-        // User : Database - Model/Entity/User
-        user = userOpt.get();
-
-        // Looking for detailed data
-        Optional<DetailUser> detailOpt = detailUserRepository.findByUser(user);
-
-//         // Check if there is or not the detailed data
-//         if (detailOpt.isPresent()) {
-//             // Detail user : Database - Model/Entity/Detail user
-//             detailUser = detailOpt.get();
-//             // Update data
-//             detailUser.setFirstName(request.getFirstName());
-//             detailUser.setLastName(request.getLastName());
-//             detailUser.setPhoneNumber(request.getPhoneNumber());
-//         } else {
-//             // Instance object detail user
-//             detailUser = new DetailUser(request.getFirstName(), request.getLastName(), request.getPhoneNumber());
-//             // Set detail user
-//             detailUser.setUser(user);
-//         }
-
-        // Save to database
-        detailUserRepository.save(detailUser);
-
-        // Spesific data what will send
-        data = new HashMap<>();
-        data.put("firstName", detailUser.getFirstName());
-        data.put("lastName", detailUser.getLastName());
-        data.put("phoneNumber", detailUser.getPhoneNumber());
-
-        // Response data
-        responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Update success!", data);
-        return responseData;
-    }
-
     // Create PIN method
     @Override
     public ResponseData<Object> createPin(long id, PinDto request) throws Exception {
