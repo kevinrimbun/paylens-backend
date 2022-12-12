@@ -14,7 +14,7 @@ import net.backend.paylens.model.dto.response.ResponseData;
 import net.backend.paylens.service.TransactionService;
 @RestController
 @RequestMapping("/transfer")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(value = "https://paylens.vercel.app")
 public class TransferController {
     @Autowired
     private TransactionService transactionService;

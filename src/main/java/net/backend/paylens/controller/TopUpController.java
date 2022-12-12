@@ -16,7 +16,7 @@ import net.backend.paylens.service.TransactionService;
 
 @RestController
 @RequestMapping("/top_up")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(value = "https://paylens.vercel.app")
 public class TopUpController {
     @Autowired
     private TransactionService transactionService;

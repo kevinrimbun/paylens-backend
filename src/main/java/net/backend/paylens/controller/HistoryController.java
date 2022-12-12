@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/history")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(value = "https://paylens.vercel.app")
 public class HistoryController {
 
     @Autowired

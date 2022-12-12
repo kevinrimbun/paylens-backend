@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(value = "https://paylens.vercel.app")
 public class UserController {
 
     // Construct service and response data

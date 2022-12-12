@@ -56,7 +56,7 @@ public class MailServiceImpl implements MailService {
 
         message.setTo(user.getEmail());
         message.setSubject("Forgot Password");
-        String pesan = "Halo "+user.getUsername()+" Silahkan mengganti password anda di link berikut ini jika anda sudah ingat pass anda harap tidak usah forgot password http://localhost:3000/new-password/" + user.getId() + " Terimakasih sudah menghubungi layanan Paylens";
+        String pesan = "Halo "+user.getUsername()+" This is your link for your new password https://paylens.vercel.app/new-password/" + user.getId() + " Terimakasih sudah menghubungi layanan Paylens";
         message.setText(pesan);
         javaMailSender.send(message);
         responseData = new ResponseData<Object>(HttpStatus.OK.value(), "Terkirim", user.getPassword());

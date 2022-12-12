@@ -26,7 +26,7 @@ import net.backend.paylens.service.FileService;
 
 @RestController
 @RequestMapping("/files")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(value = "https://paylens.vercel.app")
 public class FileController {
     @Autowired
     private FileService fileService;
