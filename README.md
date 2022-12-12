@@ -18,7 +18,7 @@
 #### mvnw spring-boot:run (If you don't have maven)
 
 ### ERD
-![alt text] (ERD-Paylens.png)
+![ERD_PayLens] (https://drive.google.com/file/d/1V_Ju2SdtZhzJG85kx3MoLxaG3FRKMQZl/view?usp=sharing)
 
 ### Method, Request Body, Path URL, Path Variable
 1.	Register Process
@@ -98,7 +98,7 @@ Form Data {key: file}, {value: (fileName)}
 -	Change Password (PUT)
 #### localhost:4000/paylens/backend/users/change-password/{userId}
 {
-    "password" : "paylen123"
+    "password" : "paylens123"
 }
 
 
