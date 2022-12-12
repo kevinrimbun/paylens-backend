@@ -161,7 +161,7 @@ public class TransactionServiceImpl implements TransactionService{
                 responseData = new ResponseData<Object>(HttpStatus.CREATED.value(), "Top Up success Updated", topUp.getTopAmount());
             }
         }else{
-            responseData = new ResponseData<Object>(HttpStatus.UNAUTHORIZED.value(), "Pin salah", null);
+            responseData = new ResponseData<Object>(HttpStatus.UNAUTHORIZED.value(), "Wrong PIN, Please Re-enter Your PIN", null);
         }
         return responseData;
     }
@@ -257,7 +257,7 @@ public class TransactionServiceImpl implements TransactionService{
                 }
                 
             }else{
-                responseData = new ResponseData<Object>(HttpStatus.UNAUTHORIZED.value(), "Pin salah", null);
+                responseData = new ResponseData<Object>(HttpStatus.UNAUTHORIZED.value(), "Wrong PIN, Please Re-enter Your PIN", null);
             }
         return responseData;
     }
