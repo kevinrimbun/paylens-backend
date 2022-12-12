@@ -23,11 +23,6 @@ public class RegisterDto {
     @NotBlank(message = "Password is required!")
     @Size(min = 8, max = 12, message = "Password must between 8 - 12 characters!")
     private String password;
-
-    // @NotBlank(message = "FirstName is required!")
-    // private String firstName;
-    // private String lastName;
-
-    // @Size(min = 10, max = 15, message = "Phone number must between 10 - 15 characters!")
-    // private String phoneNumber;
+    
+    private String role;
 }

@@ -11,10 +11,14 @@ import net.backend.paylens.model.entity.User;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserValidator {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Validate user not found method
     public void validateUserNotFound(Optional<User> userFind) throws Exception {
@@ -60,7 +64,7 @@ public class UserValidator {
 
     // Validate wrong password method
     public void validateWrongPassword(String dbPassword, String dtoPassword) throws Exception {
-        if (!dbPassword.equals(dtoPassword)) {
+        if (!passwordEncoder.matches(dtoPassword, dbPassword)) {
             throw new CustomUnauthorizedException("Unauthorized! Password does not match!");
         }
     }

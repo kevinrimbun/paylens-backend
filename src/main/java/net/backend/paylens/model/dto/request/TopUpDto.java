@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class TopUpDto {
   private Long amount;
+  private String pin;
 }
